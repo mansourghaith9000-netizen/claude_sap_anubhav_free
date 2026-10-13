@@ -1,0 +1,7 @@
+ID;createdAt;createdBy;modifiedAt;modifiedBy;username;email;fullName;role_code;isActive;lastLoginAt;traveller_ID
+50000000-0000-4000-8000-000000000001;2026-01-01T08:00:00Z;system;2026-10-12T17:45:00Z;system;admin;admin@travel.example.com;System Administrator;ADMIN;true;2026-10-12T17:45:00Z;
+50000000-0000-4000-8000-000000000002;2026-01-05T09:00:00Z;admin;2026-10-13T08:30:00Z;admin;agent.lisa;lisa.weber@travel.example.com;Lisa Weber;AGENT;true;2026-10-13T08:30:00Z;
+50000000-0000-4000-8000-000000000003;2026-01-10T09:00:00Z;admin;2026-10-10T19:20:00Z;anubhav.sharma;anubhav.sharma;anubhav.sharma@example.com;Anubhav Sharma;TRAVELLER;true;2026-10-10T19:20:00Z;10000000-0000-4000-8000-000000000001
+50000000-0000-4000-8000-000000000004;2026-01-12T11:30:00Z;admin;2026-09-25T07:10:00Z;maria.schmidt;maria.schmidt;maria.schmidt@example.de;Maria Schmidt;TRAVELLER;true;2026-09-25T07:10:00Z;10000000-0000-4000-8000-000000000002
+50000000-0000-4000-8000-000000000005;2026-02-03T08:45:00Z;agent.lisa;2026-06-11T16:20:00Z;agent.lisa;john.doe;john.doe@example.com;John Doe;TRAVELLER;false;2026-05-30T13:00:00Z;10000000-0000-4000-8000-000000000003
+50000000-0000-4000-8000-000000000006;2026-03-15T13:10:00Z;agent.lisa;2026-09-28T09:05:00Z;priya.patel;priya.patel;priya.patel@example.in;Priya Patel;TRAVELLER;true;2026-09-28T09:05:00Z;10000000-0000-4000-8000-000000000004

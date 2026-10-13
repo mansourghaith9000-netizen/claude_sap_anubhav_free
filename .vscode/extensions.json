@@ -4,6 +4,8 @@
 		"dbaeumer.vscode-eslint",
 		"mechatroner.rainbow-csv",
 		"qwtel.sqlite-viewer",
-		"humao.rest-client"
+		"humao.rest-client",
+		"mtxr.sqltools",
+		"mtxr.sqltools-driver-sqlite"
 	]
 }

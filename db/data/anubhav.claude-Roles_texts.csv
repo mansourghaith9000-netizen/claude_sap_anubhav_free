@@ -1,0 +1,7 @@
+locale;code;name;descr
+en;ADMIN;Administrator;Full system access
+en;TRAVELLER;Traveller;Self-service traveller access
+en;AGENT;Travel Agent;Agent access for managing travellers
+de;ADMIN;Administrator;Vollständiger Systemzugriff
+de;TRAVELLER;Reisender;Self-Service-Zugriff für Reisende
+de;AGENT;Reisebüro-Agent;Agentenzugriff zur Verwaltung von Reisenden

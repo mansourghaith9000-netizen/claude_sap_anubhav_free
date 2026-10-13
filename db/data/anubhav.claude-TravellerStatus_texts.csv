@@ -1,0 +1,9 @@
+locale;code;name;descr
+en;A;Active;Active traveller
+en;I;Inactive;Inactive traveller
+en;S;Suspended;Suspended traveller
+en;P;Pending;Pending verification
+de;A;Aktiv;Aktiver Reisender
+de;I;Inaktiv;Inaktiver Reisender
+de;S;Gesperrt;Gesperrter Reisender
+de;P;Ausstehend;Verifizierung ausstehend

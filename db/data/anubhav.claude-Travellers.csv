@@ -1,0 +1,7 @@
+ID;createdAt;createdBy;modifiedAt;modifiedBy;username;firstName;lastName;gender;age;status_code
+10000000-0000-4000-8000-000000000001;2026-01-10T09:00:00Z;admin;2026-09-01T10:15:00Z;admin;anubhav.sharma;Anubhav;Sharma;Male;34;A
+10000000-0000-4000-8000-000000000002;2026-01-12T11:30:00Z;admin;2026-08-20T14:00:00Z;agent.lisa;maria.schmidt;Maria;Schmidt;Female;29;A
+10000000-0000-4000-8000-000000000003;2026-02-03T08:45:00Z;agent.lisa;2026-06-11T16:20:00Z;agent.lisa;john.doe;John;Doe;Male;45;I
+10000000-0000-4000-8000-000000000004;2026-03-15T13:10:00Z;agent.lisa;2026-09-28T09:05:00Z;priya.patel;priya.patel;Priya;Patel;Female;31;A
+10000000-0000-4000-8000-000000000005;2026-04-22T07:55:00Z;admin;2026-07-30T12:40:00Z;admin;lukas.mueller;Lukas;Müller;Male;52;S
+10000000-0000-4000-8000-000000000006;2026-09-30T15:25:00Z;agent.lisa;2026-09-30T15:25:00Z;agent.lisa;sofia.rossi;Sofia;Rossi;Female;26;P

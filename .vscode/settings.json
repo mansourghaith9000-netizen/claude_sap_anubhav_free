@@ -7,5 +7,14 @@
     // "csv (semicolon)",
     // "tab",
     // "tsv"
-  ]
+  ],
+  "sqltools.connections": [
+    {
+      "name": "anubhav-claude (SQLite)",
+      "driver": "SQLite",
+      "database": "${workspaceFolder:anubhav-claude}/db.sqlite",
+      "previewLimit": 50
+    }
+  ],
+  "sqltools.useNodeRuntime": true
 }
