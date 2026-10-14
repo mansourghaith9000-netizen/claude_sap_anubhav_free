@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CAP Database Design</title>
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --secondary: #3b82f6;
+    --accent: #f59e0b;
+    --ink: #0f172a;
+    --muted: #475569;
+    --codelist: #dbeafe;
+    --main: #dcfce7;
+    --support: #fef9c3;
+    --users: #ede9fe;
+    --external: #f1f5f9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px;
+    min-height: 1280px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 100%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    position: relative;
+    padding: 48px 60px 28px;
+  }
+  .ribbon {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, .35);
+  }
+  h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+  .subtitle {
+    font-size: 28px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  .divider {
+    height: 4px;
+    margin: 0 60px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary) 60%, var(--accent));
+  }
+
+  /* ---------- Watermark badge (top right) ---------- */
+  .badge {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
+    border: 3px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px 28px;
+    text-align: right;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1), 0 0 0 6px rgba(59, 130, 246, .12);
+  }
+  .badge .main {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary);
+    text-shadow: 0 2px 4px rgba(30, 58, 138, .2);
+  }
+  .badge .sub {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-top: 2px;
+  }
+
+  /* ---------- Body layout ---------- */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 32px 60px 40px;
+  }
+  .sidebar { display: grid; grid-template-columns: 340px 1fr 1fr 1fr; gap: 24px; align-items: stretch; }
+  .legend-group h3:first-child { margin-top: 0; }
+  .card {
+    background: #fff;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+    padding: 22px 24px;
+  }
+  .card h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 10px;
+  }
+
+  /* Stats */
+  .stats { border-color: var(--primary); }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 7px 0;
+    font-size: 18px;
+    color: var(--muted);
+  }
+  .stat b {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .stat small { font-size: 13px; color: var(--muted); }
+  .stat.date b { font-size: 18px; color: var(--ink); }
+
+  /* Legend */
+  .swatch-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 17px;
+    margin: 8px 0;
+  }
+  .swatch {
+    width: 30px;
+    height: 22px;
+    border-radius: 8px;
+    border: 2px solid var(--primary);
+    flex: none;
+  }
+  .sym {
+    display: inline-block;
+    min-width: 44px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 3px 6px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: var(--primary);
+    flex: none;
+  }
+  .line {
+    width: 54px;
+    height: 0;
+    border-top: 3px solid var(--primary);
+    flex: none;
+  }
+  .line.dashed { border-top-style: dashed; }
+  .card p.note { font-size: 14px; color: var(--muted); margin-top: 12px; line-height: 1.4; }
+
+  /* Diagram */
+  .diagram {
+    background: #fff;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .diagram svg { max-width: 100%; height: auto; }
+  .diagram svg .relationshipLine { stroke: #1e3a8a !important; stroke-width: 2.5px !important; }
+  .diagram svg .relationshipLabel { fill: #1e3a8a; font-weight: 600; }
+
+  /* ---------- Footer banner ---------- */
+  footer {
+    position: relative;
+    height: 120px;
+    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+    overflow: hidden;
+  }
+  footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 14px, transparent 14px 28px);
+  }
+  footer::after {
+    /* bookmark notch on the gold tab */
+    content: "";
+    position: absolute;
+    top: 0; left: 60px;
+    width: 0; height: 0;
+  }
+  .bookmark {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    width: 56px;
+    height: 120px;
+    background: var(--accent);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+    display: flex;
+    justify-content: center;
+    padding-top: 22px;
+    font-size: 26px;
+  }
+  .footer-text { position: relative; margin-left: 90px; }
+  .footer-text .main { font-size: 36px; font-weight: 800; letter-spacing: 2px; }
+  .footer-text .sub { font-size: 22px; opacity: .9; margin-top: 2px; }
+  .footer-icons { position: relative; font-size: 44px; letter-spacing: 18px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ribbon">▶ TUTORIAL</div>
+  <h1>VACATION &amp; TRAVELLER MANAGEMENT</h1>
+  <div class="subtitle">SAP CAP Database Design · namespace <code>anubhav.claude</code></div>
+
+  <div class="badge">
+    <div class="main">🎬 Anubhav Trainings</div>
+    <div class="sub">Claude Tutorials</div>
+  </div>
+</header>
+<div class="divider"></div>
+
+<div class="content">
+
+  <main class="diagram">
+    <pre class="mermaid" id="er">
+erDiagram
+    TRAVELLERS ||--o{ CONTACTS : "contacts (composition)"
+    TRAVELLERS ||--o{ VACATIONS : "vacations (composition)"
+    TRAVELLERS |o..o{ DESTINATIONS : "traveller"
+    TRAVELLER_STATUS |o..o{ TRAVELLERS : "status"
+    ADDRESS_TYPES |o..o{ CONTACTS : "type"
+    CURRENCIES |o..o{ VACATIONS : "currency"
+    ROLES |o..o{ APP_USERS : "role"
+    TRAVELLERS |o..o{ APP_USERS : "traveller"
+
+    TRAVELLERS {
+        UUID ID PK
+        String(255) username "★ mandatory"
+        String(255) firstName
+        String(255) lastName
+        String(10) gender
+        Integer age
+        String(1) status_code FK "default A"
+        Timestamp createdAt "managed"
+        String(255) createdBy "managed"
+        Timestamp modifiedAt "managed · ETag"
+        String(255) modifiedBy "managed"
+    }
+    VACATIONS {
+        UUID ID PK
+        String(255) name
+        Decimal budget "(10,2)"
+        String(3) currency_code FK
+        String(1024) description
+        DateTime startsAt
+        DateTime endsAt
+        UUID traveller_ID FK
+    }
+    CONTACTS {
+        UUID ID PK
+        String(1) type_code FK
+        String(255) address
+        UUID traveller_ID FK
+    }
+    DESTINATIONS {
+        UUID ID PK
+        String(255) address
+        String(40) city
+        String(8) postalCode
+        String(40) country
+        UUID traveller_ID FK
+    }
+    APP_USERS {
+        UUID ID PK
+        String(100) username "★ mandatory"
+        String(255) email "★ mandatory"
+        String(255) fullName
+        String(10) role_code FK
+        Boolean isActive "default true"
+        DateTime lastLoginAt
+        UUID traveller_ID FK "optional link"
+        Timestamp createdAt "managed"
+        String(255) createdBy "managed"
+        Timestamp modifiedAt "managed"
+        String(255) modifiedBy "managed"
+    }
+    TRAVELLER_STATUS {
+        String(1) code PK
+        String(255) name "localized"
+        String(1000) descr "localized"
+    }
+    ADDRESS_TYPES {
+        String(1) code PK
+        String(255) name "localized"
+        String(1000) descr "localized"
+    }
+    ROLES {
+        String(10) code PK
+        String(255) name "localized"
+        String(1000) descr "localized"
+    }
+    CURRENCIES {
+        String(3) code PK
+        String(5) symbol
+        Integer minorUnit
+    }
+    </pre>
+  </main>
+  <aside class="sidebar">
+    <section class="card stats">
+      <h2>📊 Statistics</h2>
+      <div class="stat">Total Entities <b>8</b></div>
+      <div class="stat">Code Lists <b>3</b></div>
+      <div class="stat">Total Fields <b>50</b></div>
+      <div class="stat">Relationships <b>8</b></div>
+      <div class="stat date">Generated <b>2026-10-14</b></div>
+      <p class="note">Plus <b>Currencies</b> from <code>@sap/cds/common</code>.
+        Counts exclude the generated <code>_texts</code> tables of the code lists.</p>
+    </section>
+
+    <section class="card legend-group">
+      <h2>🧭 Entity Categories</h2>
+      <div class="swatch-row"><span class="swatch" style="background:var(--main)"></span>Main entities — Travellers, Vacations</div>
+      <div class="swatch-row"><span class="swatch" style="background:var(--support)"></span>Supporting — Contacts, Destinations</div>
+      <div class="swatch-row"><span class="swatch" style="background:var(--codelist)"></span>Code lists — AddressTypes, TravellerStatus, Roles</div>
+      <div class="swatch-row"><span class="swatch" style="background:var(--users)"></span>User management — AppUsers</div>
+      <div class="swatch-row"><span class="swatch" style="background:var(--external);border-style:dashed"></span>Reused from sap.common</div>
+    </section>
+    <section class="card legend-group">
+      <h2>🔑 Field Markers</h2>
+      <div class="swatch-row"><span class="sym">PK</span>Primary key</div>
+      <div class="swatch-row"><span class="sym">FK</span>Foreign key (association)</div>
+      <div class="swatch-row"><span class="sym">★</span>Mandatory (@mandatory)</div>
+      <div class="swatch-row"><span class="sym">managed</span>Filled by CAP (managed aspect)</div>
+    </section>
+    <section class="card legend-group">
+      <h2>🔗 Relationships</h2>
+      <div class="swatch-row"><span class="line"></span>Composition (owned children)</div>
+      <div class="swatch-row"><span class="line dashed"></span>Association (reference)</div>
+      <p class="note"><b>||</b> exactly one &nbsp;·&nbsp; <b>|o</b> zero or one &nbsp;·&nbsp; <b>o{</b> zero or many</p>
+    </section>
+  </aside>
+</div>
+
+<footer>
+  <div class="bookmark">🎓</div>
+  <div class="footer-text">
+    <div class="main">ANUBHAV TRAININGS — CLAUDE TUTORIALS</div>
+    <div class="sub">SAP CAP Database Design Tutorial Series</div>
+  </div>
+  <div class="footer-icons">📚 🎓 ▶️</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+  const CATEGORY = {
+    TRAVELLERS: '#dcfce7', VACATIONS: '#dcfce7',
+    CONTACTS: '#fef9c3', DESTINATIONS: '#fef9c3',
+    TRAVELLER_STATUS: '#dbeafe', ADDRESS_TYPES: '#dbeafe', ROLES: '#dbeafe',
+    APP_USERS: '#ede9fe',
+    CURRENCIES: '#f1f5f9'
+  };
+
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+      fontFamily: "'Segoe UI', Arial, sans-serif",
+      fontSize: '22px',
+      primaryColor: '#ffffff',
+      primaryBorderColor: '#1e3a8a',
+      primaryTextColor: '#0f172a',
+      lineColor: '#1e3a8a',
+      attributeBackgroundColorOdd: '#ffffff',
+      attributeBackgroundColorEven: '#f8fafc'
+    },
+    er: { useMaxWidth: false, fontSize: 22, entityPadding: 18, minEntityWidth: 200, minEntityHeight: 60, diagramPadding: 20 }
+  });
+
+  mermaid.run({ nodes: [document.getElementById('er')] }).then(() => {
+    const svg = document.querySelector('#er svg');
+    for (const g of svg.querySelectorAll('g[id^="entity-"]')) {
+      // Mermaid drops underscores from the ids (TRAVELLER_STATUS -> entity-TRAVELLERSTATUS-<uuid>).
+      const name = Object.keys(CATEGORY).find(n => g.id.startsWith('entity-' + n.replace(/_/g, '') + '-'));
+      if (!name) continue;
+      // Tint the entity header box, thicken the outline, enlarge the title.
+      const shapes = g.querySelectorAll(':scope > rect, :scope > path, :scope > g > rect, :scope > g > path');
+      if (shapes[0]) shapes[0].style.fill = CATEGORY[name];
+      g.querySelectorAll('rect, path').forEach(s => { s.style.stroke = '#1e3a8a'; s.style.strokeWidth = '2px'; });
+      if (name === 'CURRENCIES') g.querySelectorAll('rect, path').forEach(s => s.style.strokeDasharray = '6 4');
+    }
+    // Entity titles only (attribute texts share the entityLabel class but have "-attr-" ids).
+    svg.querySelectorAll('text[id^="text-entity-"]:not([id*="-attr-"])')
+      .forEach(t => { t.style.fontSize = '26px'; t.style.fontWeight = '700'; t.style.fill = '#1e3a8a'; });
+    window.__rendered = true;
+  }).catch(e => { window.__renderError = String(e); });
+</script>
+</body>
+</html>
