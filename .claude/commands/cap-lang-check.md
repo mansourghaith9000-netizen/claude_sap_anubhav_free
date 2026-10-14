@@ -1,4 +1,4 @@
----slash command : cap-lang-check
+---
 description: Check the health and completeness of all i18n files in a SAP CAP project
 ---
 

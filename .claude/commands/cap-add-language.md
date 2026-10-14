@@ -1,4 +1,4 @@
----slash command name: cap-add-language
+---
 description: Add a new language translation to a SAP CAP project's i18n folder
 argument-hint: <language-code> (e.g., es, it, ja, zh, pt, hi)
 ---
